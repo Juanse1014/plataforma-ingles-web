@@ -1,0 +1,93 @@
+{
+  "lessons": [
+    {
+      "id": "1",
+      "level": "A1",
+      "title": "Verb To Be",
+      "description": "Aprende a presentarte y describir cosas básicas.",
+      "status": "completed"
+    },
+    {
+      "id": "2",
+      "level": "A1",
+      "title": "Present Simple",
+      "description": "Habla sobre tus rutinas y hábitos diarios.",
+      "status": "in-progress"
+    },
+    {
+      "id": "3",
+      "level": "A1",
+      "title": "Vocabulary: Family",
+      "description": "Aprende los miembros de la familia.",
+      "status": "locked"
+    }
+  ],
+  "users": [
+    {
+      "id": "1",
+      "name": "Juan Sebastián",
+      "email": "estudiante@uniminuto.edu",
+      "password": "password123"
+    }
+  ],
+  "questions": [
+    {
+      "id": "1",
+      "lessonId": "1",
+      "questionText": "Which one is correct for 'I'?",
+      "answerOptions": [
+        {
+          "answerText": "am",
+          "isCorrect": true
+        },
+        {
+          "answerText": "is",
+          "isCorrect": false
+        },
+        {
+          "answerText": "are",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "lessonId": "1",
+      "questionText": "She _____ a doctor.",
+      "answerOptions": [
+        {
+          "answerText": "am",
+          "isCorrect": false
+        },
+        {
+          "answerText": "is",
+          "isCorrect": true
+        },
+        {
+          "answerText": "are",
+          "isCorrect": false
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "lessonId": "1",
+      "questionText": "_____ they your friends?",
+      "answerOptions": [
+        {
+          "answerText": "Am",
+          "isCorrect": false
+        },
+        {
+          "answerText": "Is",
+          "isCorrect": false
+        },
+        {
+          "answerText": "Are",
+          "isCorrect": true
+        }
+      ]
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

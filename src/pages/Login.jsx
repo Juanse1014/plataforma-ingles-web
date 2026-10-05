@@ -1,13 +1,11 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export const Login = () => {
-  // Estados para guardar los datos del formulario
-  const [credentials, setCredentials] = useState({
-    email: '',
-    password: ''
-  });
+  const navigate = useNavigate();
+  const [credentials, setCredentials] = useState({ email: '', password: '' });
+  const [error, setError] = useState('');
 
-  // Función para actualizar el estado cuando el usuario escribe
   const handleChange = (e) => {
     setCredentials({
       ...credentials,
@@ -15,11 +13,26 @@ export const Login = () => {
     });
   };
 
-  // Función para manejar el envío del formulario
-  const handleSubmit = (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Datos enviados para validar:', credentials);
-    // Aquí más adelante conectarás tu API de Express/Node.js
+    setError('');
+
+    try {
+      const response = await fetch(`http://localhost:3001/users?email=${credentials.email}&password=${credentials.password}`);
+      const users = await response.json();
+
+      if (users.length > 0) {
+        // 1. Guardamos el usuario en el localStorage convirtiéndolo a texto
+        localStorage.setItem('user', JSON.stringify(users[0]));
+        
+        // 2. Redirigimos a niveles
+        navigate('/levels');
+      } else {
+        setError('Correo o contraseña incorrectos. Intenta de nuevo.');
+      }
+    } catch (err) {
+      setError('Error al conectar con el servidor.');
+    }
   };
 
   return (
@@ -28,6 +41,13 @@ export const Login = () => {
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
           Iniciar Sesión
         </h2>
+        
+        {/* Mensaje de error condicional */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm text-center font-medium">
+            {error}
+          </div>
+        )}
         
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
@@ -58,16 +78,6 @@ export const Login = () => {
               placeholder="••••••••" 
               required 
             />
-          </div>
-          
-          <div className="flex items-center justify-between">
-            <div className="flex items-start">
-              <div className="flex items-center h-5">
-                <input id="remember" type="checkbox" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300" />
-              </div>
-              <label htmlFor="remember" className="ml-2 text-sm font-medium text-gray-500">Recordarme</label>
-            </div>
-            <a href="#" className="text-sm text-blue-700 hover:underline">¿Olvidaste tu contraseña?</a>
           </div>
           
           <button 
