@@ -1,93 +1,85 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 export const Login = () => {
-  const navigate = useNavigate();
-  const [credentials, setCredentials] = useState({ email: '', password: '' });
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setCredentials({
-      ...credentials,
-      [e.target.name]: e.target.value
-    });
-  };
-
-const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
+    // Limpiamos los espacios en blanco invisibles al inicio o al final
+    const cleanEmail = email.trim();
+    const cleanPassword = password.trim();
+
     try {
-      const response = await fetch(`http://localhost:3001/users?email=${credentials.email}&password=${credentials.password}`);
+      // Hacemos la petición con los datos limpios
+      const response = await fetch(`http://localhost:3001/users?email=${cleanEmail}&password=${cleanPassword}`);
       const users = await response.json();
+      
+      console.log("Respuesta de la base de datos:", users); // Imprime lo que encuentra
 
       if (users.length > 0) {
-        // 1. Guardamos el usuario en el localStorage convirtiéndolo a texto
-        localStorage.setItem('user', JSON.stringify(users[0]));
+        const user = users[0];
+        localStorage.setItem('user', JSON.stringify(user));
         
-        // 2. Redirigimos a niveles
-        navigate('/levels');
+        if (user.role === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/levels');
+        }
       } else {
-        setError('Correo o contraseña incorrectos. Intenta de nuevo.');
+        setError('Correo o contraseña incorrectos');
       }
-    } catch (err) {
-      setError('Error al conectar con el servidor.');
+    } catch (error) {
+      console.error("Error en el login:", error);
+      setError('Error al conectar con el servidor');
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-72px)] bg-gray-50">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8 border border-gray-200">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
-          Iniciar Sesión
-        </h2>
+    <div className="flex justify-center items-center h-[calc(100vh-72px)] bg-gray-50">
+      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl shadow-md w-96">
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Iniciar Sesión</h2>
+        {error && <p className="text-red-500 text-sm mb-4 text-center bg-red-50 p-2 rounded">{error}</p>}
         
-        {/* Mensaje de error condicional */}
-        {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm text-center font-medium">
-            {error}
-          </div>
-        )}
+        <div className="mb-4">
+          <label className="block text-gray-700 mb-2 font-medium">Correo Electrónico</label>
+          <input 
+            type="email" 
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:border-blue-500"
+            required 
+          />
+        </div>
         
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-700">
-              Correo Electrónico
-            </label>
-            <input 
-              type="email" 
-              name="email"
-              value={credentials.email}
-              onChange={handleChange}
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
-              placeholder="estudiante@uniminuto.edu" 
-              required 
-            />
-          </div>
-          
-          <div>
-            <label className="block mb-2 text-sm font-medium text-gray-700">
-              Contraseña
-            </label>
-            <input 
-              type="password" 
-              name="password"
-              value={credentials.password}
-              onChange={handleChange}
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" 
-              placeholder="••••••••" 
-              required 
-            />
-          </div>
-          
-          <button 
-            type="submit" 
-            className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition-colors"
-          >
-            Entrar a la plataforma
-          </button>
-        </form>
-      </div>
+        <div className="mb-6">
+          <label className="block text-gray-700 mb-2 font-medium">Contraseña</label>
+          <input 
+            type="password" 
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:border-blue-500"
+            required 
+          />
+        </div>
+        
+        <button 
+          type="submit" 
+          className="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition-colors"
+        >
+          Ingresar
+        </button>
+
+        {/* Dejamos preparado el enlace para el autorregistro (Opción A) */}
+        <p className="mt-4 text-center text-sm text-gray-600">
+          ¿No tienes cuenta? <Link to="/register" className="text-blue-600 hover:underline font-medium">Regístrate aquí</Link>
+        </p>
+      </form>
     </div>
   );
 };
