@@ -5,6 +5,8 @@ import { Login } from './pages/Login';
 import { Levels } from './pages/Levels';
 import { Quiz } from './pages/Quiz';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { Admin } from './pages/Admin'; // Aquí importamos el Admin
+import { Register } from './pages/Register';
 
 function App() {
   return (
@@ -15,6 +17,7 @@ function App() {
           {/* Rutas Públicas */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
           {/* Rutas Privadas (Protegidas) */}
           <Route path="/levels" element={
@@ -26,6 +29,13 @@ function App() {
           <Route path="/quiz" element={
             <ProtectedRoute>
               <Quiz />
+            </ProtectedRoute>
+          } />
+
+          {/* Nueva Ruta del Administrador */}
+          <Route path="/admin" element={
+            <ProtectedRoute>
+              <Admin />
             </ProtectedRoute>
           } />
         </Routes>
